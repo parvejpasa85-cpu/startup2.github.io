@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3-Step Navigator | Images for Subjects, Chapters & Teachers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fredoka', 'system-ui', 'Segoe UI', 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #fceeff 0%, #dff6ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #3d348b;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: stretch;
+            gap: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 60px;
+            box-shadow: 0 15px 35px -8px rgba(220, 150, 220, 0.4);
+            padding: 1.8rem 1.2rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 4px solid transparent;
+        }
+
+        .panel:hover {
+            transform: translateY(-8px) rotate(-1deg);
+            background: white;
+            border: 4px solid #fec5e5;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 1.8rem;
+            border-bottom: 3px solid #ffdeeb;
+            padding-bottom: 0.8rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .panel-title {
+            font-weight: 800;
+            font-size: 1.9rem;
+            background: linear-gradient(135deg, #764ba2, #ff80ab);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .back-btn {
+            background: #fff0f6;
+            border: 2px solid #ffdeeb;
+            color: #ff80ab;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #ffdeeb;
+            color: #3d348b;
+            transform: scale(0.95);
+        }
+
+        .panel-content {
+            flex: 1;
+            max-height: 550px;
+            overflow-y: auto;
+            padding-right: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-subject, .btn-chapter {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            background: white;
+            border: 2px solid #e2f1f8;
+            border-radius: 35px;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-subject:hover, .btn-chapter:hover {
+            background: #fbf5ff;
+            transform: translateX(10px);
+            box-shadow: 0 6px 15px rgba(220,150,220,0.2);
+            border-color: #f0c3ff;
+        }
+
+        .active-subject, .active-chapter {
+            background: linear-gradient(105deg, #fbf5ff, #ffffff);
+            border: 3px solid #f0c3ff;
+        }
+
+        .btn-subject::before, .btn-chapter::before {
+            content: '⭐';
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-size: 1.5rem;
+            opacity: 0.1;
+        }
+
+        .subject-image, .chapter-image {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .subject-info, .chapter-info {
+            flex: 1;
+        }
+
+        .subject-name, .chapter-name {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #3d348b;
+        }
+
+        .subject-desc {
+            font-size: 0.85rem;
+            color: #8a78a6;
+            margin-top: 3px;
+        }
+
+        .teacher-card {
+            background: white;
+            border: 2px solid #fdf2f8;
+            border-radius: 40px;
+            padding: 1.2rem;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .teacher-card:hover {
+            box-shadow: 0 8px 20px rgba(255, 128, 171, 0.2);
+            border-color: #fec5e5;
+        }
+
+        .teacher-main {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .teacher-image {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            background: linear-gradient(145deg, #fff0f6, #fdf2f8);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+        }
+
+        .teacher-info {
+            flex: 2;
+            min-width: 160px;
+        }
+
+        .teacher-name {
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .rating-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .rating-input {
+            width: 85px;
+            padding: 0.5rem 0.8rem;
+            border-radius: 40px;
+            border: 2px solid #ffdeeb;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ff80ab;
+            outline: none;
+        }
+
+        .rating-input:focus {
+            border-color: #ff80ab;
+            background: #fff0f6;
+        }
+
+        .submit-rating-btn {
+            background: #ff80ab;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 3px 8px rgba(255, 128, 171, 0.3);
+        }
+
+        .submit-rating-btn:hover {
+            background: #ff6091;
+            transform: scale(1.03) rotate(-2deg);
+        }
+
+        .average-rating {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: #fff8f0;
+            border-radius: 25px;
+            border: 2px solid #ffebcc;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .average-label {
+            font-weight: 800;
+            color: #d88100;
+        }
+
+        .average-value {
+            font-weight: 900;
+            font-size: 1.3rem;
+            color: #ff9f1c;
+        }
+
+        .rating-count {
+            color: #a69888;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 3rem;
+            color: #8a78a6;
+            background: #fbf5ff;
+            border-radius: 48px;
+            border: 2px dashed #f0c3ff;
+            font-weight: 600;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2.5rem;
+            font-size: 0.85rem;
+            color: #8a78a6;
+            font-weight: 600;
+        }
+
+        /* ── Top Header Bar ── */
+        .platform-row {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1rem 2rem 0.3rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .platform-name {
+            background: linear-gradient(135deg, #764ba2, #ff80ab);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.35rem 1.1rem;
+            border-radius: 40px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(255,128,171,0.35);
+            white-space: nowrap;
+        }
+
+        .title-row {
+            text-align: center;
+            padding: 0.2rem 2rem 1rem;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #764ba2, #ff80ab);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 880px) {
+            .panel { border-radius: 45px; padding: 1.2rem 0.8rem; }
+            .teacher-image { width: 60px; height: 60px; }
+            .subject-image, .chapter-image { width: 45px; height: 45px; }
+            .page-title { font-size: 1.2rem; }
+        }
+
+        /* ── Admin Modal ── */
+        .admin-trigger {
+            display: block;
+            margin: 1.2rem auto 0;
+            background: none;
+            border: none;
+            color: #ddd;
+            font-size: 0.72rem;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+        .admin-trigger:hover { color: #ff80ab; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(60, 30, 80, 0.45);
+            backdrop-filter: blur(6px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: white;
+            border-radius: 40px;
+            padding: 2.5rem 2rem;
+            width: 340px;
+            box-shadow: 0 20px 60px rgba(180,80,180,0.25);
+            text-align: center;
+            animation: popIn 0.25s ease;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.85); opacity: 0; }
+            to   { transform: scale(1);    opacity: 1; }
+        }
+        .modal-box h2 { font-size: 1.5rem; color: #764ba2; margin-bottom: 0.4rem; }
+        .modal-box p  { font-size: 0.85rem; color: #8a78a6; margin-bottom: 1.4rem; }
+
+        .modal-input {
+            width: 100%;
+            padding: 0.75rem 1.2rem;
+            border-radius: 40px;
+            border: 2px solid #ffdeeb;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #3d348b;
+            outline: none;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .modal-input:focus { border-color: #ff80ab; background: #fff0f6; }
+
+        .modal-btn-row { display: flex; gap: 0.8rem; justify-content: center; }
+
+        .modal-confirm-btn {
+            background: #ff80ab;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.6rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .modal-confirm-btn:hover { background: #ff4f8b; transform: scale(1.04); }
+
+        .modal-cancel-btn {
+            background: #f3f0ff;
+            color: #764ba2;
+            border: 2px solid #e0d4ff;
+            padding: 0.6rem 1.6rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .modal-cancel-btn:hover { background: #e8dfff; }
+
+        .modal-msg {
+            margin-top: 0.9rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            min-height: 1.2em;
+        }
+        .modal-msg.error   { color: #e03060; }
+        .modal-msg.success { color: #30a060; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div style="width: 100%;">
+
+    <!-- ── Top Header ── -->
+    <div class="platform-row">
+        <span class="platform-name">✨ Penguin Assess</span>
+    </div>
+    <div class="title-row">
+        <h1 class="page-title">Be real mates: some teachers ate certain chapters, while others just weren't it. Don't let the next folks suffer through a mid lecture.
+​Drop your honest opinion on <br>Which teacher is the "GOAT" for a specific topic?</br>.</h1>
+    </div>
+    <div class="dashboard">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title"> Subjects</span>
+                <button class="back-btn" id="resetAllBtn">⟳ Reset</button>
+            </div>
+            <div class="panel-content" id="subjectsContainer"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title"> Chapters</span>
+                <button class="back-btn" id="backToSubjectsBtn">← Back</button>
+            </div>
+            <div class="panel-content" id="chaptersContainer"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title"> Rate Teachers</span>
+                <button class="back-btn" id="backToChaptersBtn">← Back</button>
+            </div>
+            <div class="panel-content" id="teachersContainer"></div>
+        </div>
+    </div>
+    <footer>Penguin</footer>
+    <button class="admin-trigger" id="adminTriggerBtn">⚙ admin</button>
+</div>
+
+<!-- Admin Modal -->
+<div class="modal-overlay" id="adminModal">
+    <div class="modal-box">
+        <h2>🔐 Admin Reset</h2>
+        <p>Enter the admin password to permanently delete <strong>all</strong> stored ratings.</p>
+        <input class="modal-input" type="password" id="adminPasswordInput" placeholder="Enter password…">
+        <div class="modal-btn-row">
+            <button class="modal-confirm-btn" id="adminConfirmBtn">🗑 Delete All Ratings</button>
+            <button class="modal-cancel-btn" id="adminCancelBtn">Cancel</button>
+        </div>
+        <div class="modal-msg" id="adminMsg"></div>
+    </div>
+</div>
+
+<script>
+    // ─── HELPERS ────────────────────────────────────────────────────────────────
+    // Build a teacher list shared by Physics teachers
+    function makePhysicsTeachers() {
+        return [
+            { id: "t1",  name: "Apurbo Opu, ACS",                imageurl: "Apurbo.jpg",  ratings: [] },
+            { id: "t2",  name: "Numeri Sattar Apar, ACS",         imageurl: "Apar.jpg",    ratings: [] },
+            { id: "t3",  name: "Mashroor Hossain, ACS",           imageurl: "Mashroor.jpg",ratings: [] },
+            { id: "t4",  name: "MD Sarowar Hossain Emon, ACS",    imageurl: "Emon.jpg",    ratings: [] },
+            { id: "t5",  name: "Asir Anjum, UDVASH",              imageurl: "Asir.jpg",    ratings: [] },
+            { id: "t6",  name: "Chinmoy Saha, BP",                imageurl: "Chinmoy.jpg", ratings: [] },
+            { id: "t7",  name: "SM Parvej Ahmmed, BP",            imageurl: "Parvez.jpg",  ratings: [] },
+            { id: "t8",  name: "MD Yasin Mamun, BP",              imageurl: "Yasin.jpg",   ratings: [] },
+            { id: "t9",  name: "Niaz Morshed Faysal, PM",         imageurl: "Niaz.jpg",    ratings: [] },
+            { id: "t10", name: "SM Moniruzzaman, Hulkenstein",     imageurl: "Monir.jpg",   ratings: [] },
+            { id: "t11", name: "Javed Jimi, Sikho",               imageurl: "Jimi.jpg",    ratings: [] }
+        ];
+    }
+
+    function makeChemTeachers() {
+        return [
+            { id: "t1",  name: "Nazmus Sakib, ACS",               imageurl: "Nazmus.jpg",  ratings: [] },
+            { id: "t2",  name: "Sanjay Chakrabarty, ACS",         imageurl: "Sanjay.jpg",  ratings: [] },
+            { id: "t3",  name: "Hemel Barua, ACS",                imageurl: "Hemel.jpg",   ratings: [] },
+            { id: "t4",  name: "Sadat Ahmed Dipro, UDVASH",       imageurl: "Dipro.jpg",   ratings: [] },
+            { id: "t5",  name: "Saikot Abdullah, BP",             imageurl: "Mottasin.jpg",ratings: [] },
+            { id: "t6",  name: "Abdur Rahman, BP",                imageurl: "Abdur.jpg",   ratings: [] },
+            { id: "t7",  name: "Kawsar Hossain Badol, BP",        imageurl: "Badol.jpg",   ratings: [] },
+            { id: "t8",  name: "Shawon Reja, SHIKHO",             imageurl: "Shawon.jpg",  ratings: [] },
+            { id: "t9",  name: "Arif Haque, SHIKHO",              imageurl: "Arif.jpg",    ratings: [] },
+            { id: "t10", name: "Hasan Anam, Astha",               imageurl: "Anam.jpg",    ratings: [] },
+            { id: "t11", name: "MD Sajjad Hossain Rozen, UDVASH", imageurl: "Rozen.jpg",   ratings: [] }
+        ];
+    }
+
+    function makeMathTeachers() {
+        return [
+            { id: "t1", name: "Abhi Datta Tushar, ACS",               imageurl: "Abhi.jpg",     ratings: [] },
+            { id: "t2", name: "Kaji Rakibul Hassan, ACS",             imageurl: "Rakib.jpg",    ratings: [] },
+            { id: "t3", name: "Dipit Saha, ACS",                      imageurl: "Dipit.jpg",    ratings: [] },
+            { id: "t4", name: "Kazi Bokhtiar Mohammad Hasan, UDVASH", imageurl: "Bokhtiar.jpg", ratings: [] },
+            { id: "t5", name: "Mitul Rahman Ontor, UDVASH",           imageurl: "Mitul.jpg",    ratings: [] },
+            { id: "t6", name: "Javers Argho Sarder, UDVASH",          imageurl: "Argho.jpg",    ratings: [] },
+            { id: "t7", name: "Tareq Ahmed, BP",                      imageurl: "Tareq.jpg",    ratings: [] },
+            { id: "t8", name: "Khaledur Rahman Kabbo, BP",            imageurl: "Kabbo.jpg",    ratings: [] },
+            { id: "t9", name: "Jahangir Alom Shuvo, BP",              imageurl: "Shuvo.jpg",    ratings: [] }
+        ];
+    }
+
+    function makeBioTeachers() {
+        return [
+            { id: "t1",  name: "Razib Hossain Sarker, ACS",               imageurl: "Razib.jpg",  ratings: [] },
+            { id: "t2",  name: "Hasnat Suvro, ACS",                       imageurl: "Suvro.jpg",  ratings: [] },
+            { id: "t3",  name: "Dr Rizvi Touhid, ACS",                    imageurl: "Rizvi.jpg",  ratings: [] },
+            { id: "t4",  name: "Dr Tofael Ahmed, ACS",                    imageurl: "Tofael.jpg", ratings: [] },
+            { id: "t5",  name: "Sheikh Munisa Fariha Sonchari, UDVASH",   imageurl: "Munisa.jpg", ratings: [] },
+            { id: "t6",  name: "Dr Sadiqur Rahman Sadab, Battles of Bio", imageurl: "Sadab.jpg",  ratings: [] },
+            { id: "t7",  name: "Mehedi Hasan Hridoy, BP",                 imageurl: "Hridoy.jpg", ratings: [] },
+            { id: "t8",  name: "Dr Abrar Hamim, Master Biology",          imageurl: "Hamim.jpg",  ratings: [] },
+            { id: "t9",  name: "Dr Rahat, DMC Station",                   imageurl: "Rahat.jpg",  ratings: [] },
+            { id: "t10", name: "Dr Fahad, FAB",                           imageurl: "Fahad.jpg",  ratings: [] }
+        ];
+    }
+
+    // ─── DATA ────────────────────────────────────────────────────────────────────
+    const curriculumData = {
+        subjects: [
+
+            // ── Physics 1st Paper ──────────────────────────────────────────────
+            {
+                id: "Physics1",
+                name: "Physics 1st Paper",
+                imageurl: "P1.jpg",
+                description: "First emotion",
+                chapters: [
+                    { id: "chapter401", title: " ভৌত জগৎ ও পরিমাপ",          imageurl: "P1C1.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter402", title: "ভেক্টর",                      imageurl: "P1C2.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter403", title: "গতিবিদ্যা",                   imageurl: "P1C3.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter404", title: "নিউটনীয় বলবিদ্যা",          imageurl: "P1C4.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter405", title: " কাজ, শক্তি ও ক্ষমতা",         imageurl: "P1C5.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter406", title: "মহাকর্ষ ও অভিকর্ষ",         imageurl: "P1C6.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter407", title: " পদার্থের গাঠনিক ধর্ম",         imageurl: "P1C7.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter408", title: " পর্যায়বৃত্ত গতি",              imageurl: "P1C8.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter409", title: "তরঙ্গ",                        imageurl: "P1C9.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter410", title: " আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব", imageurl: "P1C10.jpg", teachers: makePhysicsTeachers() }
+                ]
+            },
+
+            // ── Physics 2nd Paper ─────────────────────────────────────────────
+            {
+                id: "Physics2",
+                name: "Physics 2nd Paper",
+                imageurl: "P2.jpg",
+                description: "Emotion turns into nightmare",
+                chapters: [
+                    { id: "chapter411", title: "তাপগতিবিদ্যা",                          imageurl: "P2C1.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter412", title: " স্থির তড়িৎ",                            imageurl: "P2C2.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter413", title: "চল তড়িৎ",                              imageurl: "P2C3.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter414", title: "তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চৌম্বকত্ব", imageurl: "P2C4.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter415", title: " তড়িৎচৌম্বকীয় আবেশ ও পরিবর্তী প্রবাহ",   imageurl: "P2C5.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter416", title: "জ্যামিতিক আলোকবিজ্ঞান",              imageurl: "P2C6.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter417", title: "ভৌত আলোকবিজ্ঞান",                      imageurl: "P2C7.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter418", title: "আধুনিক পদার্থবিজ্ঞানের সূচনা",          imageurl: "P2C8.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter419", title: " পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", imageurl: "P2C9.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter420", title: "সেমিকন্ডাক্টর ও ইলেকট্রনিক্স",         imageurl: "P2C10.jpg", teachers: makePhysicsTeachers() },
+                    { id: "chapter421", title: "জ্যোতির্বিজ্ঞান",                    imageurl: "P2C11.jpg", teachers: makePhysicsTeachers() }
+                ]
+            },
+
+            // ── Chemistry 1st Paper ───────────────────────────────────────────
+            {
+                id: "Chemistry1",
+                name: "Chemistry 1st Paper",
+                imageurl: "C1.jpg",
+                description: "It`s just lemon juice",
+                chapters: [
+                    { id: "chapter111", title: "ল্যাবরেটরির নিরাপদ ব্যবহার",               imageurl: "C1C1.jpg", teachers: makeChemTeachers() },
+                    { id: "chapter112", title: "গুণগত রসায়ন",                              imageurl: "C1C2.jpg", teachers: makeChemTeachers() },
+                    { id: "chapter113", title: "মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", imageurl: "C1C3.jpg", teachers: makeChemTeachers() },
+                    { id: "chapter114", title: "রাসায়নিক পরিবর্তন",                        imageurl: "C1C4.jpg", teachers: makeChemTeachers() },
+                    { id: "chapter115", title: "কর্মমুখী রসায়ন",                            imageurl: "C1C5.jpg", teachers: makeChemTeachers() }
+                ]
+            },
+
+            // ── Chemistry 2nd Paper ───────────────────────────────────────────
+            {
+                id: "Chemistry2",
+                name: "Chemistry 2nd Paper",
+                imageurl: "C2.jpg",
+                description: "Best of luck for organic",
+                chapters: [
+                    { id: "chapter116", title: "পরিবেশ রসায়ন",    imageurl: "C2C1.jpg", teachers: makeChemTeachers() },
+                    { id: "chapter117", title: "জৈব রসায়ন",        imageurl: "C2C2.jpg", teachers: makeChemTeachers() },
+                    { id: "chapter118", title: "পরিমাণগত রসায়ন",   imageurl: "C2C3.jpg", teachers: makeChemTeachers() },
+                    { id: "chapter118b", title: "তড়িৎ রসায়ন",     imageurl: "C2C4.jpg", teachers: makeChemTeachers() },
+                    { id: "chapter119", title: "কর্মমুখী রসায়ন",   imageurl: "C2C5.jpg", teachers: makeChemTeachers() }
+                ]
+            },
+
+            // ── Math 1st Paper ────────────────────────────────────────────────
+            {
+                id: "math1",
+                name: "Math 1st Paper",
+                imageurl: "M1.jpg",
+                description: "Little brother of organic",
+                chapters: [
+                    { id: "chapter201", title: " ম্যাট্রিক্স ও নির্ণায়ক",                  imageurl: "M1C1.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter202", title: " ভেক্টর",                                   imageurl: "M1C2.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter203", title: " সরলরেখা",                                  imageurl: "M1C3.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter204", title: " বৃত্ত",                                   imageurl: "M1C4.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter205", title: " বিন্যাস ও সমাবেশ",                         imageurl: "M1C5.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter206", title: " ত্রিকোণমিতিক অনুপাত",                    imageurl: "M1C6.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter207", title: " সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত",        imageurl: "M1C7.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter208", title: " ফাংশন ও ফাংশনের লেখচিত্র",                 imageurl: "M1C8.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter209", title: " অন্তরীকরণ",                                imageurl: "M1C9.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter210", title: " যোগজীকরণ",                                imageurl: "M1C10.jpg", teachers: makeMathTeachers() }
+                ]
+            },
+
+            // ── Math 2nd Paper ────────────────────────────────────────────────
+            {
+                id: "math2",
+                name: "Math 2nd Paper",
+                imageurl: "M2.jpg",
+                description: "Be happy in imagination",
+                chapters: [
+                    { id: "chapter211", title: " বাস্তব সংখ্যা ও অসমতা",                               imageurl: "M2C1.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter212", title: " যোগাশ্রয়ী প্রোগ্রাম",                                 imageurl: "M2C2.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter213", title: " জটিল সংখ্যা",                                         imageurl: "M2C3.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter214", title: " বহুপদী ও বহুপদী সমীকরণ",                            imageurl: "M2C4.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter215", title: " দ্বিপদী বিস্তৃতি",                                     imageurl: "M2C5.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter216", title: " কণিক",                                              imageurl: "M2C6.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter217", title: " বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ",    imageurl: "M2C7.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter218", title: " স্থিতিবিদ্যা",                                         imageurl: "M2C8.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter219", title: "সমতলে বস্তুকণার গতি",                                  imageurl: "M2C9.jpg", teachers: makeMathTeachers() },
+                    { id: "chapter220", title: " বিস্তার পরিমাপ ও সম্ভাবনা",                           imageurl: "M2C10.jpg", teachers: makeMathTeachers() }
+                ]
+            },
+
+            // ── Botany ────────────────────────────────────────────────────────
+            {
+                id: "bio1",
+                name: "Botany",
+                imageurl: "B1.jpg",
+                description: "Nothing unknown",
+                chapters: [
+                    { id: "chapter1",  title: "কোষ ও এর গঠন",                     imageurl: "B1C1.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter2",  title: "কোষ বিভাজন",                        imageurl: "B1C2.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter3",  title: "কোষ রসায়ন",                         imageurl: "B1C3.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter4",  title: "অণুজীব",                             imageurl: "B1C4.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter5",  title: "শৈবাল ও ছত্রাক",                     imageurl: "B1C5.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter6",  title: "ব্রায়োফাইটা ও টেরেডোফাইটা",         imageurl: "B1C6.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter7",  title: "নগ্নবীজী ও আবৃতবীজী উদ্ভিদ",        imageurl: "B1C7.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter8",  title: "টিস্যু ও টিস্যুতন্ত্র",              imageurl: "B1C8.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter9",  title: "উদ্ভিদের শারীরতত্ত্ব",               imageurl: "B1C9.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter10", title: "উদ্ভিদের প্রজনন",                    imageurl: "B1C10.jpg", teachers: makeBioTeachers() },
+                    { id: "chapter11", title: "জীবপ্রযুক্তি",                       imageurl: "B1C11.jpg", teachers: makeBioTeachers() },
+                    { id: "chapter12", title: "উদ্ভিদের পরিবেশ, বিস্তার ও সংরক্ষণ", imageurl: "B1C12.jpg", teachers: makeBioTeachers() }
+                ]
+            },
+
+            // ── Zoology ───────────────────────────────────────────────────────
+            {
+                id: "bio2",
+                name: "Zoology",
+                imageurl: "B2.jpg",
+                description: "Nothing known",
+                chapters: [
+                    { id: "chapter13", title: "প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস",       imageurl: "B2C1.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter14", title: "প্রাণীর পরিচিতি: হাইড্রা ও ঘাসফড়িং",    imageurl: "B2C2.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter15", title: "পরিপাক ও শোষণ",                          imageurl: "B2C3.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter16", title: "রক্ত ও সঞ্চালন",                          imageurl: "B2C4.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter17", title: "শ্বাসকার্য ও শ্বসন",                      imageurl: "B2C5.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter18", title: "বর্জ্য ও নিষ্কাশন",                       imageurl: "B2C6.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter19", title: "চলন ও অঙ্গচালনা",                         imageurl: "B2C7.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter20", title: "সমন্বয় ও নিয়ন্ত্রণ",                     imageurl: "B2C8.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter21", title: "মানব জীবনের ধারাবাহিকতা",                 imageurl: "B2C9.jpg",  teachers: makeBioTeachers() },
+                    { id: "chapter22", title: "মানবদেহের প্রতিরক্ষা",                    imageurl: "B2C10.jpg", teachers: makeBioTeachers() },
+                    { id: "chapter23", title: "জীনতত্ত্ব ও বিবর্তন",                     imageurl: "B2C11.jpg", teachers: makeBioTeachers() },
+                    { id: "chapter24", title: "প্রাণীর আচরণ",                            imageurl: "B2C12.jpg", teachers: makeBioTeachers() }
+                ]
+            }
+        ]
+    };
+
+    // ─── STORAGE HELPERS ─────────────────────────────────────────────────────────
+    // Storage key format: "rating:subjectId:chapterId:teacherId"
+    // Value: JSON array of numbers  e.g. [8, 9, 7.5]
+    // shared=true so ALL users see the same ratings
+
+    function storageKey(subjectId, chapterId, teacherId) {
+        return `rating:${subjectId}:${chapterId}:${teacherId}`;
+    }
+
+    async function loadRatings(subjectId, chapterId, teacherId) {
+        try {
+            const result = await window.storage.get(storageKey(subjectId, chapterId, teacherId), true);
+            return result ? JSON.parse(result.value) : [];
+        } catch (_) {
+            return [];
+        }
+    }
+
+    async function saveRating(subjectId, chapterId, teacherId, newRating) {
+        const key = storageKey(subjectId, chapterId, teacherId);
+        let ratings = [];
+        try {
+            const result = await window.storage.get(key, true);
+            ratings = result ? JSON.parse(result.value) : [];
+        } catch (_) { ratings = []; }
+        ratings.push(newRating);
+        try {
+            await window.storage.set(key, JSON.stringify(ratings), true);
+        } catch (e) {
+            console.error('Storage save failed:', e);
+        }
+        return ratings;
+    }
+
+    // ─── LOGIC ───────────────────────────────────────────────────────────────────
+    function calculateAverage(ratings) {
+        if (!ratings || ratings.length === 0) return null;
+        const sum = ratings.reduce((acc, val) => acc + val, 0);
+        return (sum / ratings.length).toFixed(1);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+    }
+
+    let currentSubjectId = null;
+    let currentChapterId = null;
+
+    // In-memory ratings cache for the current chapter so we don't re-fetch every render
+    // Structure: { teacherId: [number, ...] }
+    let ratingsCache = {};
+
+    function findSubjectById(subjectId) {
+        return curriculumData.subjects.find(sub => sub.id === subjectId);
+    }
+
+    // ── Subjects ──────────────────────────────────────────────────────────────────
+    function renderSubjectsPanel() {
+        const container = document.getElementById('subjectsContainer');
+        container.innerHTML = curriculumData.subjects.map(subject => `
+            <button class="btn-subject ${currentSubjectId === subject.id ? 'active-subject' : ''}" data-subject-id="${subject.id}">
+                <img class="subject-image" src="${subject.imageurl}" alt="${subject.name}" onerror="this.src='https://placehold.co/55x55?text=📚'">
+                <div class="subject-info">
+                    <div class="subject-name">${subject.name}</div>
+                    <div class="subject-desc">${subject.description}</div>
+                </div>
+            </button>
+        `).join('');
+
+        document.querySelectorAll('.btn-subject').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentSubjectId = btn.getAttribute('data-subject-id');
+                currentChapterId = null;
+                ratingsCache = {};
+                renderSubjectsPanel();
+                renderChaptersPanel();
+                renderTeachersPanel();
+            });
+        });
+    }
+
+    // ── Chapters ──────────────────────────────────────────────────────────────────
+    function renderChaptersPanel() {
+        const container = document.getElementById('chaptersContainer');
+        if (!currentSubjectId) {
+            container.innerHTML = '<div class="empty-message"> Select a subject first </div>';
+            return;
+        }
+        const subject = findSubjectById(currentSubjectId);
+        if (!subject) return;
+
+        container.innerHTML = subject.chapters.map(chapter => `
+            <button class="btn-chapter ${currentChapterId === chapter.id ? 'active-chapter' : ''}" data-chapter-id="${chapter.id}">
+                <img class="chapter-image" src="${chapter.imageurl}" alt="${chapter.title}" onerror="this.src='https://placehold.co/55x55?text=📖'">
+                <div class="chapter-info">
+                    <div class="chapter-name">${chapter.title}</div>
+                </div>
+            </button>
+        `).join('');
+
+        document.querySelectorAll('.btn-chapter').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                currentChapterId = btn.getAttribute('data-chapter-id');
+                ratingsCache = {};
+                renderChaptersPanel();
+                await loadChapterRatings();   // fetch from storage before rendering
+                renderTeachersPanel();
+            });
+        });
+    }
+
+    // ── Load all teacher ratings for the current chapter from storage ─────────────
+    async function loadChapterRatings() {
+        if (!currentSubjectId || !currentChapterId) return;
+        const subject = findSubjectById(currentSubjectId);
+        const chapter = subject.chapters.find(ch => ch.id === currentChapterId);
+        if (!chapter) return;
+
+        // Show a loading state
+        document.getElementById('teachersContainer').innerHTML =
+            '<div class="empty-message">⏳ Loading ratings...</div>';
+
+        // Fetch all teachers' ratings in parallel
+        const fetches = chapter.teachers.map(t =>
+            loadRatings(currentSubjectId, currentChapterId, t.id)
+                .then(r => { ratingsCache[t.id] = r; })
+        );
+        await Promise.all(fetches);
+    }
+
+    // ── Teachers ──────────────────────────────────────────────────────────────────
+    function renderTeachersPanel() {
+        const container = document.getElementById('teachersContainer');
+        if (!currentSubjectId || !currentChapterId) {
+            container.innerHTML = '<div class="empty-message"> Pick a chapter to rate teachers</div>';
+            return;
+        }
+
+        const subject = findSubjectById(currentSubjectId);
+        const chapter = subject.chapters.find(ch => ch.id === currentChapterId);
+
+        container.innerHTML = chapter.teachers.map(teacher => {
+            const ratings = ratingsCache[teacher.id] || [];
+            const average = calculateAverage(ratings);
+            const ratingCount = ratings.length;
+            const avgDisplay = average !== null ? average : 'No votes yet!';
+
+            return `
+                <div class="teacher-card" data-teacher-id="${teacher.id}">
+                    <div class="teacher-main">
+                        <img class="teacher-image" src="${teacher.imageurl}" alt="${teacher.name}" onerror="this.src='https://placehold.co/75x75?text=👩‍🏫'">
+                        <div class="teacher-info">
+                            <div class="teacher-name">${escapeHtml(teacher.name)}</div>
+                            <div class="rating-controls">
+                                <input type="number" class="rating-input" data-teacher-id="${teacher.id}"
+                                       min="0" max="10" step="0.5" placeholder="0-10">
+                                <button class="submit-rating-btn" data-teacher-id="${teacher.id}">⭐ Give Rating</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="average-rating">
+                        <span class="average-label">🌟 Rating:</span>
+                        <span class="average-value">${avgDisplay}</span>
+                        ${ratingCount > 0 ? `<span class="rating-count">from ${ratingCount} kind votes</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        document.querySelectorAll('.submit-rating-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const teacherId = btn.getAttribute('data-teacher-id');
+                const teacherCard = btn.closest('.teacher-card');
+                const ratingInput = teacherCard.querySelector('.rating-input');
+                const rawValue = ratingInput.value.trim();
+                if (rawValue === "") return;
+                const numericRating = parseFloat(rawValue);
+                if (isNaN(numericRating) || numericRating < 0 || numericRating > 10) return;
+
+                // Disable button while saving
+                btn.textContent = '⏳ Saving...';
+                btn.disabled = true;
+
+                // Persist to shared storage and update cache
+                const updatedRatings = await saveRating(currentSubjectId, currentChapterId, teacherId, numericRating);
+                ratingsCache[teacherId] = updatedRatings;
+
+                ratingInput.value = '';
+                btn.textContent = '💖 Saved!';
+                btn.style.background = '#ff6091';
+
+                setTimeout(() => renderTeachersPanel(), 600);
+            });
+        });
+    }
+
+    // ── Reset / Back buttons ──────────────────────────────────────────────────────
+    function resetAllSelections() {
+        currentSubjectId = null;
+        currentChapterId = null;
+        ratingsCache = {};
+        renderSubjectsPanel();
+        renderChaptersPanel();
+        renderTeachersPanel();
+    }
+
+    document.getElementById('resetAllBtn').addEventListener('click', resetAllSelections);
+    document.getElementById('backToSubjectsBtn').addEventListener('click', () => {
+        currentChapterId = null;
+        ratingsCache = {};
+        renderChaptersPanel();
+        renderTeachersPanel();
+    });
+    document.getElementById('backToChaptersBtn').addEventListener('click', () => {
+        currentChapterId = null;
+        ratingsCache = {};
+        renderTeachersPanel();
+    });
+
+    // ── Boot ──────────────────────────────────────────────────────────────────────
+    renderSubjectsPanel();
+    renderChaptersPanel();
+    renderTeachersPanel();
+
+    // ── Admin Modal Logic ─────────────────────────────────────────────────────────
+    // ⚠️  CHANGE THIS PASSWORD to something only you know!
+    const ADMIN_PASSWORD = "mySecretPass123";
+
+    const adminModal    = document.getElementById('adminModal');
+    const adminInput    = document.getElementById('adminPasswordInput');
+    const adminMsg      = document.getElementById('adminMsg');
+
+    document.getElementById('adminTriggerBtn').addEventListener('click', () => {
+        adminInput.value = '';
+        adminMsg.textContent = '';
+        adminMsg.className = 'modal-msg';
+        adminModal.classList.add('open');
+        setTimeout(() => adminInput.focus(), 100);
+    });
+
+    document.getElementById('adminCancelBtn').addEventListener('click', () => {
+        adminModal.classList.remove('open');
+    });
+
+    // Close modal if clicking the dark backdrop
+    adminModal.addEventListener('click', (e) => {
+        if (e.target === adminModal) adminModal.classList.remove('open');
+    });
+
+    document.getElementById('adminConfirmBtn').addEventListener('click', async () => {
+        if (adminInput.value !== ADMIN_PASSWORD) {
+            adminMsg.textContent = '❌ Wrong password. Try again.';
+            adminMsg.className = 'modal-msg error';
+            adminInput.value = '';
+            adminInput.focus();
+            return;
+        }
+
+        adminMsg.textContent = '⏳ Deleting all ratings…';
+        adminMsg.className = 'modal-msg';
+        document.getElementById('adminConfirmBtn').disabled = true;
+
+        try {
+            // List every key that starts with "rating:" from shared storage
+            const result = await window.storage.list('rating:', true);
+            const keys = result ? result.keys : [];
+
+            // Delete them all in parallel
+            await Promise.all(keys.map(k => window.storage.delete(k, true)));
+
+            // Clear in-memory cache too
+            ratingsCache = {};
+
+            adminMsg.textContent = `✅ Done! ${keys.length} rating record(s) deleted.`;
+            adminMsg.className = 'modal-msg success';
+
+            // Refresh the teachers panel if one is open
+            renderTeachersPanel();
+        } catch (err) {
+            adminMsg.textContent = '⚠️ Something went wrong. Check console.';
+            adminMsg.className = 'modal-msg error';
+            console.error(err);
+        }
+
+        document.getElementById('adminConfirmBtn').disabled = false;
+    });
+
+    // Also allow pressing Enter in the password field
+    adminInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('adminConfirmBtn').click();
+    });
+</script>
+</body>
+</html>
+
